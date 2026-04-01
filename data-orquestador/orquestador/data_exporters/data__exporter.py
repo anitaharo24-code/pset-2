@@ -23,7 +23,7 @@ def export_data_to_postgres(df: DataFrame, **kwargs) -> None:
     config_path = path.join(get_repo_path(), 'io_config.yaml')
     config_profile = 'default'
 
-    tamano = 10000
+    tamano = 1000
 
     num_chunks = math.ceil(df.shape[0]/tamano)
     

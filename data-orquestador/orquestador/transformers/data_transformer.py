@@ -3,7 +3,6 @@ if 'transformer' not in globals():
 if 'test' not in globals():
     from mage_ai.data_preparation.decorators import test
 
-
 @transformer
 def transform(data, *args, **kwargs):
     """
@@ -20,15 +19,23 @@ def transform(data, *args, **kwargs):
         Anything (e.g. data frame, dictionary, array, int, str, etc.)
     """
     # Specify your transformation logic here
-    data.columns=[columna.lower() for columna in data.columns]
-    data.rename(columns={
-        'vendorid': 'vendor_id', 
-        'ratecodeid': 'rate_code_id', 
-        'pulocationid': 'pu_location_id', 
-        'dolocationid': 'do_location_id'
-        },inplace=True)
+    transformed_chunks = []
 
-    return data
+    for df in data:
+        # Convertir columnas a minúsculas
+        df.columns = [col.lower() for col in df.columns]
+
+        # Renombrar columnas específicas
+        df.rename(columns={
+            'vendorid': 'vendor_id',
+            'ratecodeid': 'rate_code_id',
+            'pulocationid': 'pu_location_id',
+            'dolocationid': 'do_location_id'
+        }, inplace=True)
+
+        transformed_chunks.append(df)
+
+    return transformed_chunks
 
 
 @test
