@@ -3,6 +3,9 @@ if 'transformer' not in globals():
 if 'test' not in globals():
     from mage_ai.data_preparation.decorators import test
 
+from mage_ai.data_preparation.shared.secrets import get_secret_value
+from sqlalchemy import create_engine, text
+
 @transformer
 def transform(data, *args, **kwargs):
     """
@@ -19,28 +22,31 @@ def transform(data, *args, **kwargs):
         Anything (e.g. data frame, dictionary, array, int, str, etc.)
     """
     # Specify your transformation logic here
-    transformed_chunks = []
+    # Leer credenciales desde los secrets de Mage
+    user     = get_secret_value('pg_user')
+    password = get_secret_value('pg_password')
+    host     = get_secret_value('pg_host')
+    port     = get_secret_value('pg_port')
+    db       = get_secret_value('pg_db')
+    
+    engine = create_engine(
+        f"postgresql://{user}:{password}@{host}:{port}/{db}"
+    )
 
-    for df in data:
-        # Convertir columnas a minúsculas
-        df.columns = [col.lower() for col in df.columns]
+    with engine.begin() as conn:
+        conn.execute(text("CREATE SCHEMA IF NOT EXISTS raw;"))
+        print("Schema 'raw' listo.")
 
-        # Renombrar columnas específicas
-        df.rename(columns={
-            'vendorid': 'vendor_id',
-            'ratecodeid': 'rate_code_id',
-            'pulocationid': 'pu_location_id',
-            'dolocationid': 'do_location_id'
-        }, inplace=True)
+    engine.dispose()
 
-        transformed_chunks.append(df)
+    # Pasa la lista de URLs al siguiente bloque
+    return data
 
-    return transformed_chunks
-
-
+   
 @test
 def test_output(output, *args) -> None:
     """
     Template code for testing the output of the block.
     """
     assert output is not None, 'The output is undefined'
+    assert len(output) > 0, 'La lista de URLs está vacía'

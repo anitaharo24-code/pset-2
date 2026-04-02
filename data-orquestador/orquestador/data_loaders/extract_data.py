@@ -24,30 +24,20 @@ def load_data(*args, **kwargs):
         Anything (e.g. data frame, dictionary, array, int, str, etc.)
     """
     year = 2025
-    months = range(1, 13)  # Enero y Febrero como prueba
+    months = range(1, 3)  # Enero y Febrero como prueba
 
-    base_columns = None
-    all_chunks = []
+    lista_url = []
 
     for month in months:
-        url = f'https://d37ci6vzurychx.cloudfront.net/trip-data/green_tripdata_{year}-{month:02d}.parquet'
+        lista_url.append ({
+            'year': year,
+            'month': month, 
+            'url': f'https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_{year}-{month:02d}.parquet'})
 # Leer parquet directamente desde la URL
-        df = pd.read_parquet(url)
+    df_url = pd.DataFrame(lista_url)
+    print(f"Archivos a procesar: {len(df_url)}")
 
-        # Definir columnas base en el primer mes
-        if base_columns is None:
-            base_columns = df.columns.tolist()
-            print("Columnas base:", base_columns)
-        else:
-            df = df.reindex(columns=base_columns)
-
-        # Chunking
-        for chunk in load_parquet_in_chunks(df):
-            all_chunks.append(chunk)
-
-        print(f'Mes {month} cargado.')
- 
-    return all_chunks# Specify your data loading logic here
+    return df_url# Specify your data loading logic here
 
 
 @test
@@ -56,3 +46,4 @@ def test_output(output, *args) -> None:
     Template code for testing the output of the block.
     """
     assert output is not None, 'The output is undefined'
+    assert len(output) > 0, 'No hay URLs generadas'
