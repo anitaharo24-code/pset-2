@@ -1,0 +1,209 @@
+blocks:
+- all_upstream_blocks_executed: true
+  color: blue
+  configuration: {}
+  downstream_blocks:
+  - borrado_inicial
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: sensor_final
+  retry_config: null
+  status: executed
+  timeout: null
+  type: custom
+  upstream_blocks: []
+  uuid: sensor_final
+- all_upstream_blocks_executed: true
+  color: grey
+  configuration:
+    data_provider: postgres
+    data_provider_profile: default
+    dbt: {}
+    disable_query_preprocessing: true
+    export_write_policy: append
+    limit: 1000
+    use_raw_sql: true
+  downstream_blocks:
+  - inconsistencias_raw
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: sql
+  name: borrado_inicial
+  retry_config: null
+  status: executed
+  timeout: null
+  type: custom
+  upstream_blocks:
+  - sensor_final
+  uuid: borrado_inicial
+- all_upstream_blocks_executed: true
+  color: pink
+  configuration:
+    data_provider: postgres
+    data_provider_profile: default
+    dbt: {}
+    disable_query_preprocessing: true
+    export_write_policy: append
+    limit: 1000
+    use_raw_sql: true
+  downstream_blocks:
+  - nulos
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: sql
+  name: inconsistencias_raw
+  retry_config: null
+  status: executed
+  timeout: null
+  type: custom
+  upstream_blocks:
+  - borrado_inicial
+  uuid: inconsistencias_raw
+- all_upstream_blocks_executed: true
+  color: purple
+  configuration:
+    data_provider: postgres
+    data_provider_profile: default
+    dbt: {}
+    disable_query_preprocessing: true
+    export_write_policy: append
+    limit: 1000
+    use_raw_sql: true
+  downstream_blocks:
+  - duplicados
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: sql
+  name: nulos
+  retry_config: null
+  status: executed
+  timeout: null
+  type: custom
+  upstream_blocks:
+  - inconsistencias_raw
+  uuid: nulos
+- all_upstream_blocks_executed: true
+  color: teal
+  configuration:
+    data_provider: postgres
+    data_provider_profile: default
+    dbt: {}
+    disable_query_preprocessing: true
+    export_write_policy: append
+    limit: 1000
+    use_raw_sql: true
+  downstream_blocks:
+  - dimensiones
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: sql
+  name: duplicados
+  retry_config: null
+  status: executed
+  timeout: null
+  type: custom
+  upstream_blocks:
+  - nulos
+  uuid: duplicados
+- all_upstream_blocks_executed: true
+  color: yellow
+  configuration:
+    data_provider: postgres
+    data_provider_profile: default
+    dbt: {}
+    disable_query_preprocessing: true
+    export_write_policy: append
+    limit: 1000
+    use_raw_sql: true
+  downstream_blocks:
+  - fact_trips
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: sql
+  name: dimensiones
+  retry_config: null
+  status: executed
+  timeout: null
+  type: custom
+  upstream_blocks:
+  - duplicados
+  uuid: dimensiones
+- all_upstream_blocks_executed: true
+  color: blue
+  configuration:
+    data_provider: postgres
+    data_provider_profile: default
+    dbt: {}
+    disable_query_preprocessing: true
+    export_write_policy: append
+    limit: 1000
+    use_raw_sql: true
+  downstream_blocks:
+  - insert_tabla
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: sql
+  name: fact_trips
+  retry_config: null
+  status: executed
+  timeout: null
+  type: custom
+  upstream_blocks:
+  - dimensiones
+  uuid: fact_trips
+- all_upstream_blocks_executed: true
+  color: grey
+  configuration:
+    data_provider: postgres
+    data_provider_profile: default
+    dbt: {}
+    disable_query_preprocessing: true
+    export_write_policy: append
+    limit: 1000
+    use_raw_sql: true
+  downstream_blocks: []
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: sql
+  name: insert_tabla
+  retry_config: null
+  status: executed
+  timeout: null
+  type: custom
+  upstream_blocks:
+  - fact_trips
+  uuid: insert_tabla
+cache_block_output_in_memory: false
+callbacks: []
+concurrency_config: {}
+conditionals: []
+created_at: '2026-04-03 02:58:52.228384+00:00'
+data_integration: null
+description: Tubería con una capa analítica limpia, estandarizada y lista para consumo
+  posterior
+executor_config: {}
+executor_count: 1
+executor_type: null
+extensions: {}
+name: clean_pipeline
+notification_config: {}
+remote_variables_dir: null
+retry_config: {}
+run_pipeline_in_one_process: false
+settings:
+  triggers: null
+spark_config: {}
+tags: []
+type: python
+uuid: clean_pipeline
+variables_dir: /home/src/mage_data/orquestador
+widgets: []
